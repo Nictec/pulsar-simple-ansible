@@ -1,0 +1,9 @@
+---
+
+pulsar:
+  version: 3.3.1
+  extracted_filename: apache-pulsar-3.3.1
+
+zookeeper:
+  version: 3.9.2
+  extracted_filename: apache-zookeeper-3.9.2

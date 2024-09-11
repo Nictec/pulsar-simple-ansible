@@ -1,0 +1,17 @@
+# Storage dir
+dataDir=/tmp/zookeeper
+
+# Server settings
+tickTime=2000
+initLimit=10
+syncLimit=5
+
+# Ports
+clientPort=2181
+admin.serverPort=8090
+
+
+# Neighbours
+{% for host in hostvars %}
+server.{{ loop.counter }}={{host}}
+{% endfor %}
