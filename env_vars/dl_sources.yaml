@@ -6,7 +6,7 @@ pulsar:
 
 bookkeeper:
   version: 4.17.1
-  extracted_filename: bookkeeper-4.17.1
+  extracted_filename: bookkeeper-server-4.17.1
 
 zookeeper:
   version: 3.9.2

@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=/opt/{{ bookkeeper["extracted_filename"] }}/bin/bookkeeper bookie
-WorkingDirectory=/opt/pulsar
+WorkingDirectory=/opt/{{ bookkeeper["extracted_filename"] }}
 RestartSec=1s
 Restart=on-failure
 
