@@ -1,3 +1,7 @@
 ---
 
 zookeeper_node_id: 2
+zookeeper_servers:
+  1: pulsar01:2888:3888
+  2: 0.0.0.0:2888:3888
+  3: pulsar03:2888:3888
