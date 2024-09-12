@@ -1,0 +1,13 @@
+[Unit]
+Description=Pulsar Broker
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/{{ pulsar["extracted_filename"] }}/bin/pulsar broker
+WorkingDirectory=/opt/{{ pulsar["extracted_filename"] }}
+RestartSec=1s
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

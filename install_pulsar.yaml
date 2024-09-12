@@ -1,0 +1,37 @@
+---
+
+- name: Install and configure Pulsar Broker on nodes
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - include_vars: env_vars/dl_sources.yaml
+    - name: Ensure default-jre is installed
+      ansible.builtin.apt:
+        name: default-jre
+        state: latest
+    - name: Ensure pulsar user exists
+      ansible.builtin.user:
+        name: pulsar
+        shell: /bin/bash
+        state: present
+    - name: Download and untar Pulsar Broker
+      ansible.builtin.unarchive:
+        src: https://www.apache.org/dyn/closer.lua/pulsar/pulsar-{{ pulsar["version"] }}/apache-pulsar-{{ pulsar["version"] }}-bin.tar.gz?action=download
+        dest: /opt
+        owner: pulsar
+        group: pulsar
+        remote_src: yes
+    - name: Configure pulsar
+      ansible.builtin.template:
+        src: templates/broker.conf.j2
+        dest: /opt/usr/{{ pulsar["extracted_filename"] }}/conf/broker.conf
+        owner: pulsar
+        group: pulsar
+        force: yes
+    - name: Install Pulsar Systemd Service
+      ansible.builtin.template:
+        src: template/broker.service.j2
+        dest: /etc/systemd/system/broker.service
+        owner: root
+        group: root

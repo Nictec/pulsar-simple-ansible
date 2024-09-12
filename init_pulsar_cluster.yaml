@@ -1,0 +1,14 @@
+---
+
+- name: Initialize Pulsar cluster
+  hosts: pulsar01
+
+  tasks:
+    - name: run pulsar init
+      ansible.builtin.shell: |
+        /opt/{{ pulsar["extracted_filename"] }}/bin/pulsar initialize-cluster-metadata \
+          --cluster=nic-pulsar01
+          --zookeeper=pulsar02:2181
+          --configuration-store=pulsar01:2181
+          --web-service-url=http://{{ hostvars|join(":8080,") }}
+          --broker-service-url pulsar://{{ hostvars|join(":6650,") }}
