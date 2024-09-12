@@ -6,4 +6,4 @@ pulsar:
 
 zookeeper:
   version: 3.9.2
-  extracted_filename: apache-zookeeper-3.9.2
+  extracted_filename: apache-zookeeper-3.9.2-bin

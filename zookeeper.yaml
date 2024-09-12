@@ -5,6 +5,7 @@
   remote_user: root
 
   tasks:
+    - include_vars: env_vars/dl_sources.yaml
     - name: Ensure default-jre is installed
       ansible.builtin.apt:
         name: default-jre
@@ -14,24 +15,30 @@
         name: zookeeper
         shell: /bin/bash
         state: present
+    - name: Ensure zookeeper dirs
+      ansible.builtin.file:
+        path: /var/zookeeper
+        owner: zookeeper
+        group: zookeeper
+        state: directory
     - name: Download and untar ZooKeeper
       ansible.builtin.unarchive:
-        src: https://dlcdn.apache.org/zookeeper/zookeeper-{{ zookeeper.version }}/apache-zookeeper-{{ ansible_env.zookeeper.version }}-bin.tar.gz
-        dest: /opt/{{ zookeeper.extracted_filename }}
+        src: https://dlcdn.apache.org/zookeeper/zookeeper-{{ zookeeper["version"] }}/apache-zookeeper-{{ zookeeper["version"] }}-bin.tar.gz
+        dest: /opt
         owner: zookeeper
         group: zookeeper
         remote_src: yes
     - name: Configure ZooKeeper
       ansible.builtin.template:
         src: templates/zoo.cfg.j2
-        dst: /opt/{{ zookeeper.extracted_filename }}/conf/zoo.conf
+        dest: /opt/{{ zookeeper["extracted_filename"] }}/conf/zoo.cfg
         owner: zookeeper
         group: zookeeper
         force: yes
     - name: Install ZooKeeper Systemd Service
       ansible.builtin.template:
         src: templates/zookeeper.service.j2
-        dst: /etc/systemd/system/zookeeper.service
+        dest: /etc/systemd/system/zookeeper.service
         owner: root
         group: root
     - name: Initialize zookeeper
@@ -39,8 +46,5 @@
         dest: /var/zookeeper/myid
         content: |
           {{ zookeeper_node_id }}
-    - name: Start zookeeper
-      ansible.builtin.systemd_service:
-        state: started
-        daemon_reload: true
-        name: zookeeper
+        owner: zookeeper
+        group: zookeeper

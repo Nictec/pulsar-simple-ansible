@@ -1,5 +1,5 @@
 # Storage dir
-dataDir=/tmp/zookeeper
+dataDir=/var/zookeeper
 
 # Server settings
 tickTime=2000
@@ -13,5 +13,5 @@ admin.serverPort=8090
 
 # Neighbours
 {% for host in hostvars %}
-server.{{ loop.counter }}={{host}}
+server.{{ loop.index }}={{host}}:2888:3888
 {% endfor %}
