@@ -1,0 +1,14 @@
+[Unit]
+Description=Apache BookKeeper
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/{{ bookkeeper["extracted_filename"] }}/bin/bookkeeper bookie
+WorkingDirectory=/opt/pulsar
+RestartSec=1s
+Restart=on-failure
+
+
+[Install]
+WantedBy=multi-user.target

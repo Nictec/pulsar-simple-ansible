@@ -1,0 +1,50 @@
+---
+
+- name: Install and configure ZooKeeper on nodes
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - include_vars: env_vars/dl_sources.yaml
+    - name: Ensure default-jre is installed
+      ansible.builtin.apt:
+        name: default-jre
+        state: latest
+    - name: Ensure zookeeper user exists
+      ansible.builtin.user:
+        name: zookeeper
+        shell: /bin/bash
+        state: present
+    - name: Ensure zookeeper dirs
+      ansible.builtin.file:
+        path: /var/zookeeper
+        owner: zookeeper
+        group: zookeeper
+        state: directory
+    - name: Download and untar ZooKeeper
+      ansible.builtin.unarchive:
+        src: https://dlcdn.apache.org/zookeeper/zookeeper-{{ zookeeper["version"] }}/apache-zookeeper-{{ zookeeper["version"] }}-bin.tar.gz
+        dest: /opt
+        owner: zookeeper
+        group: zookeeper
+        remote_src: yes
+    - name: Configure ZooKeeper
+      ansible.builtin.template:
+        src: templates/zoo.cfg.j2
+        dest: /opt/{{ zookeeper["extracted_filename"] }}/conf/zoo.cfg
+        owner: zookeeper
+        group: zookeeper
+        force: yes
+    - name: Install ZooKeeper Systemd Service
+      ansible.builtin.template:
+        src: templates/zookeeper.service.j2
+        dest: /etc/systemd/system/zookeeper.service
+        owner: root
+        group: root
+    - name: Initialize zookeeper
+      copy:
+        dest: /var/zookeeper/myid
+        content: |
+          {{ zookeeper_node_id }}
+        owner: zookeeper
+        group: zookeeper

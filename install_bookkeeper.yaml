@@ -1,0 +1,44 @@
+---
+
+- name: Install and configure BookKeeper on nodes
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - include_vars: env_vars/dl_sources.yaml
+    - name: Ensure default-jre is installed
+      ansible.builtin.apt:
+        name: default-jre
+        state: latest
+    - name: Ensure bookkeeper user exists
+      ansible.builtin.user:
+        name: bookkeeper
+        shell: /bin/bash
+        state: present
+    - name: Ensure bookkeeper journal dir
+      ansible.builtin.file:
+        path: /var/bookkeeper/journal
+        owner: bookkeeper
+        group: bookkeeper
+        state: directory
+    - name: Ensure bookkeeper ledger dir
+      ansible.builtin.file:
+        path: /var/bookkeeper/ledgers
+        owner: bookkeeper
+        group: bookkeeper
+        state: directory
+    - name: Download and untar BookKeeper
+      ansible.builtin.unarchive:
+        src: https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=bookkeeper/bookkeeper-{{ bookkeeper["version"] }}/bookkeeper-server-{{ bookkeeper["version"] }}-bin.tar.gz
+        dest: /opt
+        owner: bookkeeper
+        group: bookkeeper
+        remote_src: yes
+    - name: Configure Bookkeeper
+      ansible.builtin.template:
+        src: templates/bookkeeper.conf.j2
+        dest: /opt/{{ bookkeeper["extracted_filename"] }}/conf/bookkeeper.conf
+    - name: Set up BookKeeper systemd service
+      ansible.builtin.template:
+        src: templates/bookkeeper.service
+        dest: /etc/systemd/system/bookkeeper.service

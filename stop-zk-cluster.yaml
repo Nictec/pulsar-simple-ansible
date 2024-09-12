@@ -1,0 +1,12 @@
+---
+
+- name: Stop ZooKeeper Cluster
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - name: start
+      ansible.builtin.systemd_service:
+        state: stopped
+        name: zookeeper.service
+        daemon_reload: true
