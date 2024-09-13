@@ -1,0 +1,22 @@
+---
+
+- name: Start all cluster components
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - name: Start zookeeper cluster
+      ansible.builtin.systemd_service:
+        state: started
+        name: zookeeper.service
+        daemon_reload: true
+    - name: Start bookie cluster
+      ansible.builtin.systemd_service:
+        state: started
+        name: bookkeeper.service
+        deamon_reload: true
+    - name: Start brokers
+      ansible.builtin.systemd_service:
+        state: started
+        name: broker.service
+        deamon_reload: true

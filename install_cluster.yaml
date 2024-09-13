@@ -1,0 +1,5 @@
+---
+
+- import_playbook: install_zookeeper.yaml
+- import_playbook: install_bookkeeper.yaml
+- import_playbook: install_pulsar.yaml
