@@ -1,0 +1,12 @@
+---
+
+- name: Start BookKeeper Cluster
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - name: start
+      ansible.builtin.systemd_service:
+        state: stopped
+        name: broker.service
+        daemon_reload: true
